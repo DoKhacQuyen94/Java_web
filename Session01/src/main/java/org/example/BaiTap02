@@ -1,0 +1,18 @@
+1. Nguyên nhân: Bản chất của Bean mặc định (Singleton)
+    Trong Spring Framework, khi bạn đánh dấu một lớp bằng @Component mà không chỉ định gì thêm, Spring sẽ mặc định coi đó là một Singleton Bean.
+    Định nghĩa Singleton Scope: Spring IoC Container chỉ tạo ra duy nhất một đối tượng (instance) của Bean đó trong suốt vòng đời của ứng dụng.
+    Cơ chế hoạt động: Mọi nơi yêu cầu (inject) PlaySession đều sẽ nhận được tham chiếu đến cùng một vùng nhớ dữ liệu duy nhất.
+2. Giải thích hiện tượng "Tính nhầm tiền"
+    Dựa vào mã nguồn bạn cung cấp, chúng ta có thể thấy luồng lỗi như sau:
+
+    Dùng chung trạng thái (Shared State): Vì PlaySession là Singleton, biến private double playTime không thuộc về một máy trạm cụ thể nào cả. Nó là biến toàn cục của cả hệ thống Cyber.
+
+    Sự cố máy 01 và máy 02:
+
+    Khi máy 01 gọi addTime(10), giá trị playTime trong Bean duy nhất đó tăng lên 10.
+
+    Khi máy 02 bắt đầu phiên chơi, nó cũng được Spring "phát" cho chính cái Bean mà máy 01 đang dùng.
+
+    Hệ quả là máy 02 nhìn thấy số giờ của máy 01, và ngược lại. Bất kỳ thay đổi nào từ một máy trạm đều trực tiếp tác động lên dữ liệu của tất cả các máy trạm khác.
+
+    Lỗ hổng Logic: Hệ thống đang coi "Phiên chơi" (vốn dĩ phải là dữ liệu riêng tư) thành "Dịch vụ dùng chung" (vốn dĩ như Database Connection hay Logging).

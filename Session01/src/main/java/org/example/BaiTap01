@@ -1,0 +1,20 @@
+1. Xác định đoạn mã lỗi (Code Smell)
+    Đoạn mã gây vấn đề nằm ngay trong Constructor của lớp RechargeService:
+    public RechargeService() {
+        // Lỗi: Tự khởi tạo thủ công (Hard-code dependency)
+        this.gateway = new InternalPaymentGateway();
+    }
+
+2. Giải thích tại sao cách viết này làm mất tính linh hoạt
+    Việc sử dụng từ khóa new để khởi tạo InternalPaymentGateway bên trong RechargeService đã vi phạm các nguyên lý thiết kế phần mềm quan trọng:
+    1. Phụ thuộc chặt chẽ (Tight Coupling)
+        RechargeService bây giờ "biết" quá nhiều về InternalPaymentGateway. Nó không chỉ biết cách dùng cổng thanh toán mà còn biết chính xác loại cổng thanh toán nào đang được sử dụng. Nếu bạn muốn đổi sang MomoGateway, bạn buộc phải vào tận code của RechargeService để sửa lại. Điều này vi phạm nguyên tắc Open/Closed Principle (Mở để mở rộng, đóng để sửa đổi).
+    2. Vi phạm nguyên lý Đảo ngược phụ thuộc (Dependency Inversion)
+        Theo nguyên lý này, các module cấp cao (RechargeService) không nên phụ thuộc vào các module cấp thấp (InternalPaymentGateway). Cả hai nên phụ thuộc vào một Abstraction (ví dụ: một Interface PaymentGateway).
+        Ở mã nguồn trên, RechargeService đang bị "dính chặt" vào một thực thi cụ thể (Implementation), khiến nó không thể tái sử dụng.
+    3. Khó khăn trong việc mở rộng (Scalability)
+        Như bối cảnh bạn nêu, khi khách hàng muốn dùng Momo hoặc ZaloPay:
+        Cách hiện tại: Bạn phải viết thêm các câu lệnh if-else hoặc switch-case bên trong constructor để chọn loại Gateway. Code sẽ trở nên rối rắm và dễ phát sinh lỗi khi số lượng cổng thanh toán tăng lên.
+        Hậu quả: Mỗi lần thêm một cổng thanh toán mới, bạn lại phải biên dịch lại (recompile) và kiểm thử lại toàn bộ lớp RechargeService.
+    4. Khó khăn khi viết Unit Test
+        Khi kiểm thử tính năng nạp tiền, bạn thường không muốn thực hiện một giao dịch thật lên hệ thống ngân hàng. Với cách viết cũ, bạn không thể thay thế InternalPaymentGateway bằng một đối tượng giả (Mock Object) để kiểm tra logic của processRecharge mà không cần kết nối thật.

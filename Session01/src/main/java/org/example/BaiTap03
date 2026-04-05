@@ -1,0 +1,42 @@
+1. Phân tích Dữ liệu (Input/Output)
+    Để hệ thống vận hành, chúng ta cần xác định rõ các thực thể dữ liệu tham gia vào quá trình:
+    Input (Dữ liệu đầu vào):
+        userId: Định danh người chơi đang ngồi tại máy.
+        foodId: Mã món ăn khách hàng chọn (ví dụ: "Mì xào bò").
+        quantity: Số lượng phần ăn muốn đặt.
+    Output (Kết quả mong đợi):
+        Thành công: Trả về thông báo xác nhận, trừ tiền tài khoản thành công và giảm số lượng tồn kho.
+        Thất bại: Trả về thông báo lỗi cụ thể (Hết hàng / Không đủ tiền / Lỗi hệ thống).
+
+2. Thiết kế Kiến trúc (Dependency Injection)
+    Chúng ta sẽ áp dụng nguyên lý Inversion of Control (IoC) để tách biệt các thành phần, giúp mã nguồn dễ bảo trì và mở rộng.
+    Các thành phần chính:
+        InventoryRepository (Interface): Chịu trách nhiệm truy vấn và cập nhật kho hàng.
+        UserAccountRepository (Interface): Chịu trách nhiệm kiểm tra số dư và thực hiện trừ tiền.
+        OrderFoodService (Service): Lớp chứa logic nghiệp vụ chính, được "tiêm" (inject) hai Repository trên vào để hoạt động.
+3. Lưu đồ Xử lý Logic (Algorithm Workflow)
+Để giải quyết các "bẫy dữ liệu" (hết hàng, âm tiền), quy trình xử lý sẽ được thực hiện theo các bước tuần tự sau:
+
+Tiếp nhận Order: Nhận thông tin userId, foodId, quantity.
+
+Kiểm tra Kho (Inventory Check):
+
+Gọi InventoryRepository để lấy số lượng tồn kho hiện tại của món ăn.
+
+Nếu stock < quantity: Trả về lỗi "Rất tiếc, món này hiện đã hết hàng!".
+
+Kiểm tra Tài khoản (Balance Check):
+
+Tính tổng tiền = price (của món ăn) * quantity.
+
+Gọi UserAccountRepository để lấy số dư của userId.
+
+Nếu balance < totalAmount: Trả về lỗi "Số dư tài khoản không đủ để đặt món này".
+
+Thực thi Giao dịch (Transaction):
+
+Bước A: Gọi InventoryRepository để giảm số lượng tồn kho (updateStock).
+
+Bước B: Gọi UserAccountRepository để trừ tiền người dùng (deductMoney).
+
+Phản hồi: Trả về kết quả đặt hàng thành công cho Client.

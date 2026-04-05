@@ -1,0 +1,23 @@
+PHÂN TÍCH SO SÁNH CÁC GIẢI PHÁP DEPENDENCY INJECTION (DI)
+1. Giải pháp Constructor Injection (Khuyên dùng)
+
+    Cơ chế: Tiêm phụ thuộc trực tiếp qua hàm khởi tạo của lớp.
+
+    Ưu điểm: Cho phép khai báo biến là final (bất biến), đảm bảo các Sender không bị thay đổi sau khi tạo. Dễ dàng viết Unit Test bằng cách truyền Mock object vào mà không cần chạy cả hệ thống Spring.
+
+    Nhược điểm: Code trông sẽ dài dòng hơn một chút vì phải viết hàm khởi tạo.
+
+    Độ an toàn: Rất cao. Nếu thiếu một phụ thuộc, ứng dụng sẽ báo lỗi ngay lập tức khi khởi động (Fail-fast).
+
+2. Giải pháp Field Injection (Nên tránh)
+
+    Cơ chế: Dùng @Autowired trực tiếp trên các biến private.
+
+    Ưu điểm: Code nhìn rất gọn gàng, sạch sẽ và ít phải viết boilerplate code.
+
+    Nhược điểm: Không thể dùng từ khóa final. Rất khó để viết Unit Test vì các biến bị ẩn (private), buộc phải dùng các thư viện hỗ trợ Reflection để can thiệp.
+
+    Độ an toàn: Thấp. Dễ phát sinh lỗi NullPointerException trong lúc ứng dụng đang chạy nếu Spring không tìm thấy Bean phù hợp.
+
+Chốt chọn: Constructor Injection.
+Lý do: Đây là giải pháp tiêu chuẩn (Best Practice) cho các hệ thống yêu cầu độ tin cậy cao như Cyber Center. Nó giúp tách biệt hoàn toàn logic nghiệp vụ với Framework, giúp việc bảo trì và kiểm thử trở nên minh bạch, an toàn nhất.
