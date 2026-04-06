@@ -1,0 +1,29 @@
+# BÁO CÁO PHÂN TÍCH LỖ HỔNG XSS VÀ REFACTOR JSTL
+
+## 1. Phân tích lỗ hổng XSS (Cross-Site Scripting)
+**XSS là gì?**
+XSS là lỗ hổng xảy ra khi ứng dụng web nhận dữ liệu đầu vào từ người dùng và trực tiếp in ra trình duyệt mà không qua bước kiểm tra hoặc làm sạch (escaping). Kẻ gian có thể lợi dụng điều này để chèn mã JavaScript độc hại vào trang web, từ đó đánh cắp cookie, session, hoặc thay đổi giao diện để lừa đảo các người dùng khác.
+
+**Tại sao `<c:out value="${keyword}"/>` an toàn hơn `${keyword}`?**
+Khi sử dụng EL thuần túy `${keyword}`, dữ liệu sẽ bị in nguyên thủy (raw) vào cây DOM của HTML. Nếu ta dùng `<c:out>`, JSTL sẽ tự động thực hiện quá trình **XML Escaping**. Nó sẽ chuyển đổi các ký tự nhạy cảm thành HTML Entities.
+
+**So sánh HTML output khi input là `<script>alert('xss')</script>`:**
+- Nếu dùng `${keyword}` -> Trình duyệt nhận: `<script>alert('xss')</script>`. (Trình duyệt hiểu đây là lệnh và thực thi popup cảnh báo).
+- Nếu dùng `<c:out>` -> Trình duyệt nhận: `&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;`. (Trình duyệt hiểu đây chỉ là văn bản thuần túy và in nguyên dòng chữ ra màn hình, không có popup nào xuất hiện).
+
+## 2. Sự khác nhau giữa `<c:if>` và `<c:choose>`
+- **`<c:if test="...">`:** Hoạt động giống như lệnh `if` độc lập trong Java. Nó không có lệnh `else` đi kèm. Phù hợp cho các tình huống kiểm tra trạng thái đơn lẻ (Ví dụ: Hiển thị thông báo khi danh sách rỗng).
+- **`<c:choose> / <c:when> / <c:otherwise>`:** Hoạt động tương đương với chuỗi `if - else if - else` hoặc khối `switch-case` trong Java. Chỉ có **một** nhánh đầu tiên thỏa mãn điều kiện được thực thi.
+
+**Ứng dụng trong logic Giá vé và Số lượng vé:**
+Phải sử dụng `<c:choose>` cho cột Giá vé và Vé còn lại. Lý do là các trạng thái hiển thị này mang tính **loại trừ lẫn nhau** (Mutually Exclusive).
+Ví dụ: Một vé không thể vừa hiển thị chữ "MIỄN PHÍ" vừa hiển thị giá tiền. Việc dùng `<c:choose>` giúp logic chặt chẽ hơn và tối ưu hiệu năng vì engine JSP sẽ bỏ qua các thẻ `<c:when>` bên dưới ngay khi tìm thấy nhánh điều kiện đúng đầu tiên (tránh phải evaluate nhiều lần như khi dùng nhiều thẻ `<c:if>` rời rạc).
+
+## 3. Vai trò của thẻ `<c:url>`
+Thẻ `<c:url value="..."/>` giải quyết triệt để 2 vấn đề lớn so với việc hardcode thuộc tính `href` thông thường:
+
+1. **Xử lý Context Path tự động:** Khi hardcode `href="/events/1/book"`, trình duyệt sẽ luôn điều hướng về gốc tên miền (ví dụ: `http://localhost:8080/events/1/book`). Nếu lúc deploy lên môi trường Production, ứng dụng của ta được cấu hình chạy dưới một Context Path riêng như `/ticketing`, link hardcode sẽ bị lỗi 404 (Not Found).
+   Sử dụng `<c:url>` sẽ tự động chèn Context Path vào đầu. Link sinh ra sẽ chính xác là: `http://localhost:8080/ticketing/events/1/book`.
+
+2. **Xử lý URL Rewriting (Bảo lưu Session):**
+   Nếu client tắt tính năng lưu trữ Cookie, server không thể gửi `JSESSIONID` qua Cookie để nhận diện người dùng. Trong trường hợp này, `<c:url>` sẽ tự động nối thẳng chuỗi `;jsessionid=...` vào phía sau đường link để duy trì phiên đăng nhập cho user.

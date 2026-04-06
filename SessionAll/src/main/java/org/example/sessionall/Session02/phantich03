@@ -1,0 +1,14 @@
+# BÁO CÁO PHÂN TÍCH SCOPE VÀ CONCURRENCY TRONG JSP/SPRING MVC
+## 1. Tại sao thông báo lỗi đăng nhập phải lưu vào Request Scope mà không phải Session Scope?
+- **Giải thích:** Request Scope chỉ có vòng đời tồn tại trong một chu kỳ `HTTP Request - Response`. Khi server trả kết quả về cho client (hiển thị lỗi), Request Scope sẽ lập tức bị hủy.
+- **Nếu lưu nhầm vào Session Scope:** Session tồn tại trong suốt phiên làm việc của người dùng. Nếu đẩy câu báo lỗi "Sai mật khẩu" vào Session, thông báo này sẽ "dính" luôn trên giao diện. Ngay cả khi người dùng F5 tải lại trang hoặc chuyển sang trang khác rồi quay lại, dòng lỗi đỏ vẫn hiển thị, trừ khi developer viết thêm code để chủ động xóa (remove) attribute đó. Điều này gây trải nghiệm UX rất tệ và hao tốn bộ nhớ server vô ích.
+## 2. Tại sao `totalViewCount` phải lưu vào Application Scope?
+- **Giải thích:** Application Scope (`ServletContext`) đại diện cho toàn bộ ứng dụng Web. Dữ liệu lưu trong scope này được **chia sẻ chung cho tất cả các user** và tồn tại từ lúc server khởi động đến lúc server tắt. Mục tiêu là đếm tổng lượt xem của *toàn hệ thống*, do đó bắt buộc phải dùng Application Scope.
+- **Nếu lưu vào Session Scope:** Session Scope là bộ nhớ riêng tư của từng người dùng (`HttpSession`). Nếu lưu vào đây, khi Nhân viên A vào xem 3 lần, đếm của A là 3. Nhân viên B đăng nhập máy khác vào xem 1 lần, đếm của B là 1. Bộ đếm sẽ bị phân mảnh cá nhân hóa, không thể tổng hợp được con số chung của cả cửa hàng.
+## 3. Phân tích lỗi Race Condition và Cách khắc phục
+**Đoạn code tiềm ẩn lỗi:**
+```java
+Integer count = (Integer) application.getAttribute("totalViewCount");
+if (count == null) count = 0;
+count++;
+application.setAttribute("totalViewCount", count);
