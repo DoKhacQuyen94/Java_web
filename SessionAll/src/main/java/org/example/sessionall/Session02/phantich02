@@ -1,0 +1,5 @@
+<%! private int requestCounter... %> (Race Condition): Khai báo biến toàn cục trong Servlet sinh ra từ JSP khiến số đếm bị sai khi có nhiều luồng truy cập đồng thời. View cũng không được phép lưu trữ trạng thái.
+`` (Lộ thông tin): Dùng HTML comment sẽ khiến ghi chú nội bộ bị lộ khi người dùng xem mã nguồn trang (View Page Source).
+<% for... if... %> (Vi phạm MVC): Nhúng logic xử lý (vòng lặp, rẽ nhánh xếp loại) trực tiếp vào View tạo ra "Spaghetti code", khó bảo trì và không thể Unit Test.
+<%= sv.getFullName() %> (Lỗ hổng XSS): In thẳng dữ liệu ra trình duyệt mà không mã hóa (escaping) khiến trang web dễ bị tấn công chèn mã độc (Cross-Site Scripting).
+<%= sv.getScore()%>; (Lỗi giao diện): Dấu chấm phẩy ; thừa bên ngoài thẻ %> sẽ bị in thẳng ra màn hình, gây rác giao diện (ví dụ: in ra 92;).

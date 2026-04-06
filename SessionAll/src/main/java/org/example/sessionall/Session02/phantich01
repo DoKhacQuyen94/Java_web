@@ -1,0 +1,27 @@
+1. Lỗi trong MyWebAppInitializer.java
+    return new String[] { "/api/*" };
+DispatcherServlet chỉ xử lý các URL dạng:   /api/*
+Ví dụ:
+    /api/users
+    /api/welcome
+Trong khi request thực tế là:
+/welcome
+→ Không khớp mapping
+→ DispatcherServlet không nhận request
+→ Tomcat trả về HTTP 404
+
+2. Lỗi trong WebConfig.java
+    @ComponentScan(basePackages = "com.demo.service")
+Spring chỉ quét package:    com.demo.service
+Nhưng WelcomeController nằm ở:  com.demo.controller
+→ Spring không phát hiện @Controller
+→ Không có handler cho /welcome
+→ Request tiếp tục bị 404
+
+3. Nếu chỉ sửa lỗi 1 mà không sửa lỗi 2
+Sau khi sửa mapping thành:  "/"
+DispatcherServlet đã nhận được request /welcome.
+Nhưng do ComponentScan sai, Spring không tìm thấy WelcomeController.
+→ HandlerMapping không tìm được handler
+→ Ứng dụng vẫn trả về 404
+Kết luận: phải sửa cả Servlet Mapping và ComponentScan thì ứng dụng mới chạy được.
