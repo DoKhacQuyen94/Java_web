@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa món ăn</title>
+</head>
+<body>
+<h2>Chỉnh sửa món ăn</h2>
+<form th:object="${dish}">
+    ID:
+    <input type="text" th:field="*{id}" readonly>
+    <br><br>
+    Tên món:
+    <input type="text" th:field="*{name}">
+    <br><br>
+    Giá:
+    <input type="number" th:field="*{price}">
+    <br><br>
+    Còn hàng:
+    <input type="checkbox" th:field="*{available}">
+    <br><br>
+
+    <button type="submit">Lưu</button>
+</form>
+</body>
+</html>

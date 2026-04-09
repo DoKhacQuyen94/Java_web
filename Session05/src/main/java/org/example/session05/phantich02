@@ -1,0 +1,33 @@
+# BÀI 2 – HIỂN THỊ DANH SÁCH MÓN ĂN BẰNG THYMELEAF
+
+## 1. Cấu trúc Model Dish
+
+Lớp Dish dùng để lưu thông tin món ăn trong hệ thống.
+
+Thuộc tính:
+
+- id (Long): mã món ăn
+- name (String): tên món
+- price (double): giá món ăn
+- isAvailable (boolean): trạng thái còn hàng hay hết hàng
+
+---
+
+## 2. Sơ đồ luồng dữ liệu (I/O)
+
+Request URL
+/bai2/dishes
+        ↓
+DishController
+        ↓
+DishService tạo danh sách List<Dish>
+        ↓
+Controller đưa dữ liệu vào Model
+model.addAttribute("dishes", dishList)
+        ↓
+Return view "dish-list"
+        ↓
+Thymeleaf render
+/WEB-INF/templates/dish-list.html
+        ↓
+HTML hiển thị danh sách món ăn

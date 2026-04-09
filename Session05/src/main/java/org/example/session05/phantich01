@@ -1,0 +1,14 @@
+## Phát hiện lỗi cấu hình Thymeleaf
+
+**Lỗi 1:** Sai thư mục template
+Code dùng `/WEB-INF/views`, đây là thư mục thường dùng cho **JSP**.
+Thymeleaf chuẩn phải dùng **`/WEB-INF/templates/`**.
+
+**Lỗi 2:** Sai định dạng file view
+Code dùng `.jsp` nhưng **Thymeleaf chỉ render file `.html`**.
+
+### Kết luận
+Cần sửa:
+
+- `/WEB-INF/views` → `/WEB-INF/templates/`
+- `.jsp` → `.html`

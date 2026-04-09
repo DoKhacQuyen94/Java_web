@@ -1,0 +1,17 @@
+## Luồng dữ liệu chỉnh sửa món ăn (Data Flow)
+1. **Người dùng** mở trang danh sách món ăn `/bai2/dishes`.
+2. Tại mỗi dòng món ăn có nút **"Chỉnh sửa"**.
+   Khi người dùng nhấn vào nút này, trình duyệt sẽ gửi request đến đường dẫn:
+   `/bai3/edit/{id}`
+   Ví dụ: `/bai3/edit/3`
+3. **Controller (AdminDishController)** nhận `id` từ URL thông qua `@PathVariable`.
+4. Controller gọi **AdminDishService** để tìm món ăn tương ứng với `id`.
+5. Hệ thống xảy ra 2 trường hợp:
+   - **Nếu tìm thấy món ăn**
+     - Controller đưa đối tượng `Dish` vào `Model`.
+     - Trả về trang `edit-dish.html`.
+     - Form trên trang sẽ tự động điền dữ liệu cũ bằng `th:object` và `th:field`.
+   - **Nếu không tìm thấy món ăn**
+     - Controller thêm thông báo lỗi `"Không tìm thấy món ăn yêu cầu!"` vào `Model`.
+     - Chuyển hướng về trang danh sách `/bai2/dishes`.
+6. **View edit-dish.html** hiển thị form chỉnh sửa với dữ liệu đã được đổ sẵn để người quản lý chỉnh sửa.

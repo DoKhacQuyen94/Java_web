@@ -1,0 +1,16 @@
+# BÀI 4 – Thymeleaf Layout Dialect
+
+## 1. Bảng so sánh hai cách tiếp cận
+
+| Tiêu chí | (A) Copy Header/Footer | (B) Layout Dialect (`layout:decorate`) |
+|---|---|---|
+| Cách làm | Copy code Header/Footer vào từng file HTML | Tạo 1 layout chung, các trang kế thừa |
+| Ưu điểm | Dễ làm, không cần cấu hình thêm | Code gọn, tái sử dụng cao |
+| Nhược điểm | Trùng lặp code, khó bảo trì | Cần thêm dependency và cấu hình |
+| Khi sửa Header | Phải sửa nhiều file | Chỉ sửa 1 file layout |
+| Khả năng mở rộng | Kém | Tốt, phù hợp project lớn |
+
+**Kết luận:**
+Cách **B (Layout Dialect)** tốt hơn vì giảm lặp code và dễ bảo trì.
+
+---
