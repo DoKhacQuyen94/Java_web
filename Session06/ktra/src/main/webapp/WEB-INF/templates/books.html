@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book List</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+<body>
+<!-- gọi fragment header -->
+<div th:replace="fragments/header :: header('Danh sách sách')"></div>
+<h3>Danh sách Book</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Tên sách</th>
+        <th>Tác giả</th>
+        <th>Giá</th>
+        <th>Chi tiết</th>
+    </tr>
+    <tr th:each="b : ${books}"
+        th:classappend="${b.price >= 300000} ? 'expensive'">
+        <td th:text="${b.id}"></td>
+        <td th:text="${b.name}"></td>
+        <td th:text="${b.author}"></td>
+        <td th:text="${#numbers.formatDecimal(b.price,0,'COMMA',0,'POINT')}"></td>
+        <td>
+            <a th:href="@{/books/{id}(id=${b.id})}">
+                Xem chi tiết
+            </a>
+        </td>
+    </tr>
+</table>
+<br>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
