@@ -1,0 +1,32 @@
+/* Reset nhỏ */
+body{
+    font-family: Arial, sans-serif;
+}
+
+/* Header */
+header h3{
+    font-weight: bold;
+}
+
+/* Card khóa học */
+.course-card{
+    transition: 0.3s;
+}
+
+.course-card:hover{
+    transform: scale(1.03);
+}
+
+/* Footer */
+footer{
+    margin-top: 50px;
+}
+
+/* Responsive tweak */
+@media (max-width:768px){
+
+    header h3{
+        font-size:18px;
+    }
+
+}

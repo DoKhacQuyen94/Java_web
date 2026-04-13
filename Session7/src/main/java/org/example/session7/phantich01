@@ -1,0 +1,9 @@
+1. Tại sao "Tên cửa hàng" lại bị null?
+Nguyên nhân: Spring Data Binding hoạt động dựa trên việc khớp thuộc tính name của thẻ <input> với tên trường (field) trong class Java (POJO).
+Chi tiết: Trong class RestaurantProfile, bạn đặt tên biến là name. Tuy nhiên, trong HTML, bạn lại đặt name="restaurantName".
+Kết quả: Spring không tìm thấy trường nào tên là restaurantName trong object để đổ dữ liệu vào, dẫn đến field name vẫn giữ giá trị mặc định là null.
+2. Tại sao Checkbox active không hoạt động đúng?
+Nguyên nhân: Sai lệch kiểu dữ liệu và giá trị truyền về.
+Chi tiết: * Biến active trong Java có kiểu boolean (chỉ nhận true/false).
+Trong HTML, bạn đặt value="MỞ_CỬA". Khi checkbox được tích, trình duyệt sẽ gửi chuỗi "MỞ_CỬA" về server.
+Kết quả: Spring Converter không thể ép kiểu (cast) chuỗi "MỞ_CỬA" sang kiểu boolean, dẫn đến lỗi binding hoặc giá trị không được cập nhật chính xác.

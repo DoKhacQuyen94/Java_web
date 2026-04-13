@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <body>
+
+<div th:fragment="header">
+
+    <header class="bg-dark text-white py-3">
+        <div class="container d-flex align-items-center">
+
+            <!-- Logo -->
+            <img th:src="@{/images/logo.png}"
+                 alt="Logo"
+                 width="50"
+                 class="me-3">
+
+            <!-- Title -->
+            <div>
+                <h3 class="m-0">Qx Academy</h3>
+                <small>Learn Programming – Build Your Future</small>
+            </div>
+
+        </div>
+    </header>
+
+</div>
 
 </body>
 </html>

@@ -1,0 +1,7 @@
+1. Vi phạm nguyên tắc DRY (Don't Repeat Yourself)
+Việc lặp lại logic lấy dữ liệu categories ở 3 hàm GET chính là vi phạm nguyên tắc DRY. Trong phát triển phần mềm, "lặp lại là kẻ thù của bảo trì".
+2. Rủi ro khi hệ thống mở rộng
+Nếu nhà hàng có 20 trang giao diện và bạn vẫn copy-paste đoạn code đó, các rủi ro lớn sẽ phát sinh:
+Khó bảo trì (Maintenance Nightmare): Khi danh mục thay đổi (ví dụ: thêm nhóm "Món chay" hoặc lấy dữ liệu từ Database thay vì gán cứng), bạn phải đi tìm và sửa tại 20 địa điểm khác nhau.
+Dễ sai sót (Inconsistency): Chỉ cần quên sửa ở 1 trang, dữ liệu hiển thị sẽ không đồng bộ, gây lỗi nghiệp vụ.
+Code "Rác" (Boilerplate Code): Controller sẽ trở nên cực kỳ dài và khó đọc, che lấp đi logic xử lý chính của từng API.

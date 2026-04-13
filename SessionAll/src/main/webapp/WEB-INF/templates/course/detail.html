@@ -1,10 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Course Detail</title>
 </head>
+
 <body>
-$END$
+
+<div layout:fragment="content">
+
+    <div class="row">
+
+        <!-- LEFT -->
+        <div class="col-md-8">
+
+            <h2 th:text="${course.name}"></h2>
+
+            <!-- Badge trạng thái -->
+            <span class="badge bg-danger"
+                  th:if="${course.isFull}">
+                HẾT CHỖ
+            </span>
+
+            <span class="badge bg-success"
+                  th:if="${!course.isFull}">
+                CÒN CHỖ
+            </span>
+
+            <hr>
+
+            <p>
+                <b>Mã khóa học:</b>
+                <span th:text="${course.code}"></span>
+            </p>
+
+            <p>
+                <b>Trình độ:</b>
+                <span th:text="${course.level}"></span>
+            </p>
+
+            <p>
+                <b>Thời lượng:</b>
+                <span th:text="${course.duration}"></span>
+            </p>
+
+            <p>
+                <b>Ngày khai giảng:</b>
+                <span th:text="${course.startDate}"></span>
+            </p>
+
+            <p>
+                <b>Số học viên:</b>
+                <span th:text="${course.studentCount}"></span>
+            </p>
+
+            <hr>
+
+            <h4>Mô tả khóa học</h4>
+
+            <p th:text="${course.description}"></p>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h4 class="text-primary">
+
+                        <!-- format tiền -->
+                        <span th:text="${#numbers.formatDecimal(course.fee,0,'COMMA',0,'POINT')}">
+                        </span> VNĐ
+
+                    </h4>
+
+                    <p class="mt-3">
+                        <b>Lộ trình:</b>
+                    </p>
+
+                    <ul>
+
+                        <li>Basic Programming</li>
+                        <li>OOP</li>
+                        <li>Framework</li>
+                        <li>Real Project</li>
+
+                    </ul>
+
+                    <a th:href="@{/course/list}"
+                       class="btn btn-secondary w-100 mt-3">
+
+                        ← Quay lại
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
